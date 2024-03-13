@@ -1,6 +1,8 @@
 package com.example.productcatalogapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +18,26 @@ public class MainActivity extends AppCompatActivity {
     private Button addButton;
     private List<Product> productList = new ArrayList<>();
 
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Recycler View Set Up
+        recyclerView = findViewById(R.id.productListRecycler);
+        recyclerView.setHasFixedSize(true);
+
+        // Recycler View Layout
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // Recycler View Adapter
+        adapter = new RecyclerViewAdapter(); // my own class
+        recyclerView.setAdapter(adapter);
 
         fillProductList();
         Log.d(TAG, String.format("onCreate: %s", productList.toString()));
