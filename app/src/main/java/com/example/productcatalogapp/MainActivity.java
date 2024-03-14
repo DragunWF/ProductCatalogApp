@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
+import android.widget.SearchView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,8 +15,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private Button addButton;
+    private Button sortButton;
     public static List<Product> productList = new ArrayList<>();
 
+    private SearchView searchView;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -25,6 +27,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        searchView = findViewById(R.id.productSearch);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         createRecyclerView();
         if (productList.size() == 0) {
@@ -58,10 +74,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtons() {
+        sortButton = findViewById(R.id.sortButton);
         addButton = findViewById(R.id.addButton);
+
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditOne.class);
             startActivity(intent);
         });
+
+        sortButton.setOnClickListener(v -> {
+            sortProductList();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void sortProductList() {
+        for (int i = 0, n = productList.size(); i < n; i++) {
+            for (int j = 0; j < n - 1; j++) {
+                double current = productList.get(j).getPrice();
+                double next = productList.get(j + 1).getPrice();
+                if (current > next) {
+                    Product temp = productList.get(j);
+                    productList.set(j, productList.get(j + 1));
+                    productList.set(j + 1, temp);
+                }
+            }
+        }
     }
 }
