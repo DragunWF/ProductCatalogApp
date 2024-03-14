@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private final String TAG = "Products App";
     private Button addButton;
-    private List<Product> productList = new ArrayList<>();
+    public static List<Product> productList = new ArrayList<>();
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -27,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        createRecyclerView();
+        if (productList.size() == 0) {
+            fillProductList();
+        }
+
+        setButtons();
+    }
+
+    private void createRecyclerView() {
         // Recycler View Set Up
         recyclerView = findViewById(R.id.productListRecycler);
         recyclerView.setHasFixedSize(true);
@@ -36,16 +44,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // Recycler View Adapter
-        adapter = new RecyclerViewAdapter(); // my own class
+        adapter = new RecyclerViewAdapter(productList); // my own class
         recyclerView.setAdapter(adapter);
-
-        fillProductList();
-        Log.d(TAG, String.format("onCreate: %s", productList.toString()));
-        Log.d(TAG, String.valueOf(productList.size()));
-
-        addButton = findViewById(R.id.addButton);
-
-        setButtons();
     }
 
     private void fillProductList() {
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtons() {
+        addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddEditOne.class);
             startActivity(intent);
